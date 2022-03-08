@@ -6,7 +6,7 @@ import Search from './components/Search';
 const App = () => {
   const [loading, setLoading] = React.useState(true);
   const [images, setImages] = React.useState([]);
-  const [searchTerm, setSearchTerm] = React.useState('a');
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   React.useEffect(() => {
     fetch(
@@ -18,18 +18,25 @@ const App = () => {
         setLoading(false);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [searchTerm]);
 
   return (
     <div>
       <Header />
-      <div className="container mx-auto">
-        <Search />
-        <article className="grid grid-cols-3 gap-20 items-center ">
-          {images.map((img) => {
-            return <Image key={img.id} {...img} />;
-          })}
-        </article>
+      <div className="container mx-auto mb-20">
+        <Search searchText={(text) => setSearchTerm(text)} />
+        {!loading && images.length === 0 && (
+          <h1 className="text-6xl text-center mt-40">No Images Found</h1>
+        )}
+        {loading ? (
+          <h1 className="text-6xl text-center">LOADING.....</h1>
+        ) : (
+          <article className="grid grid-cols-1 gap-20 items-center xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 ">
+            {images.map((img) => {
+              return <Image key={img.id} {...img} />;
+            })}
+          </article>
+        )}
       </div>
     </div>
   );
